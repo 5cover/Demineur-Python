@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>4b9ab3f0-ac8f-4a3f-b338-8a23e2ead5a4</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Démineur_Python.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,7 +21,20 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Démineur_Python.py" />
+    <Compile Include="Controller\Case.pyw" />
+    <Compile Include="Controller\CaseBombe.pyw" />
+    <Compile Include="Controller\CaseDrapeau.pyw" />
+    <Compile Include="Controller\CaseExplosee.pyw" />
+    <Compile Include="Controller\CaseVide.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="main.py" />
+    <Compile Include="View\MainWindow.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="Controller\" />
+    <Folder Include="View\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
