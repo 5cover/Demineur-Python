@@ -3,6 +3,11 @@ from random import randint
 import Case
 
 class Grille(object):
+
+    @property
+    def matrice(self)
+        return self._matrice
+
     def __init__(self, hauteur: int, largeur: int, nombreBombes: int):
         
         if hauteur < 0 or largeur < 0:
