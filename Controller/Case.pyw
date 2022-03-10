@@ -1,31 +1,34 @@
-from abc import abstractmethod # Module utilisé pour déclarer des classes abstraites
+from abc import abstractmethod # Module utilisÃ© pour dÃ©clarer des classes abstraites
 
 class Case(object):
 
-     # Marqueurs de propriété abstraite
+     # Marqueurs de propriÃ©tÃ© abstraite
     @property
     @abstractmethod 
     def texture(self):
-    """ Chaîne de caractère correspondant au chemin de l'image de la texture de la case. """
+    """ ChaÃ®ne de caractÃ¨re correspondant au chemin de l'image de la texture de la case. """
         pass
 
-    @abstractmethod # Marqueur de méthode abstraite
+    @abstractmethod # Marqueur de mÃ©thode abstraite
     def handleClick(event):
-    """ Méthode destinée à traiter l'évènement de clic sur la case. """
+    """ MÃ©thode destinÃ©e Ã  traiter l'Ã©vÃ¨nement de clic sur la case. """
         pass
 
-class Sure(Case):
-    """ Case non creusée ne cachant pas de bombe """
+class Pleine(Case):
+    """ Case non creusÃ©e pouvant cacher une bombe """
 
     @property
     def texture(self):
         pass
+    
+    def __init__(self, bombe: bool):
+        self.bombe = bombe
 
     def handleClick(event):
         pass
 
 class Vide(Case):
-    """ Case creusée """
+    """ Case creusÃ©e """
     
     @property
     def nbBombesVoisines(self):
@@ -36,7 +39,7 @@ class Vide(Case):
         if nbBombesVoisines > 0 and nbBombesVoisines < 8:
             self.nbBombesVoisines = nbBombesVoisines
         else:
-            raise ValueError("Le nombre de bombes voisines doit être entre 0 (aucune) et 8 (toutes les cases voisines).")
+            raise ValueError("Le nombre de bombes voisines doit Ãªtre entre 0 (aucune) et 8 (toutes les cases voisines).")
 
     @property
     def texture(self):
@@ -49,28 +52,21 @@ class Vide(Case):
         pass
 
 class Drapeau(Case):
-    """ Case contenant un drapeau plaçé par le joueur, marquant ou non l'emplacememnt d'une bombe.
-    Un chiffre de 0 à 8 s'affiche dessus selon le nombre de cases voisines contenant une bombe."""
+    """ Case contenant un drapeau plaÃ§Ã© par le joueur, marquant ou non l'emplacememnt d'une bombe.
+    Un chiffre de 0 Ã  8 s'affiche dessus selon le nombre de cases voisines contenant une bombe."""
 
     @property
     def texture(self):
         pass
 
-    def __init__(self, surBombe: bool):
-        self.surBombe = surBombe
-
-class Bombe(Case):
-    """ Case cachant une bombe"""
-
-    @property
-    def texture(self):
-        pass
+    def __init__(self, bombe: bool):
+        self.bombe = bombe
 
     def handleClick(event):
         pass
-
+     
 class Explosee(Case):
-    """ Case contenant une bombe explosée """
+    """ Case contenant une bombe explosÃ©e """
 
     @property
     def texture(self):
