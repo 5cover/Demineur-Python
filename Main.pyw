@@ -1,1 +1,3 @@
+from view.mainWindow import afficherFenetrePrincipale
 
+afficherFenetrePrincipale()

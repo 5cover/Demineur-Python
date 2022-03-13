@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>4b9ab3f0-ac8f-4a3f-b338-8a23e2ead5a4</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Main.pyw</StartupFile>
+    <StartupFile>main.pyw</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,15 +22,14 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Controller\Case.pyw" />
-    <Compile Include="Controller\Grille.pyw" />
-    <Compile Include="Main.pyw" />
-    <Compile Include="View\MainWindow.pyw" />
+    <Compile Include="controller\config.pyw" />
+    <Compile Include="main.pyw" />
+    <Compile Include="view\mainWindow.pyw" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="Controller\" />
-    <Folder Include="View\" />
+    <Folder Include="model\" />
+    <Folder Include="controller\" />
+    <Folder Include="view\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
