@@ -45,7 +45,32 @@ def compterBombesVoisines(colonne: int, ligne: int, bombes):
                        ligne + 2 if ligne < hauteur else hauteur):
             if bombes[i][j]:
                 bombesVoisines += 1
+
+    if bombes[colonne][ligne]:
+        bombesVoisines -= 1
+
     return bombesVoisines
+
+def choisirCouleur(n: int):
+    if n == 1:
+        return "blue"
+    if n == 2:
+        return "green"
+    if n == 3:
+        return "red"
+    if n == 4:
+        return "indigo"
+    if n == 5:
+        return "violetred4"
+    if n == 6:
+        return "turquoise1"
+    if n == 7:
+        return "black"
+    if n == 8:
+        return "gray50"
+
+    return "black"
+
 
 # Chemin du dossier des textures relatif au répertoire racine de l'application.
 CHEMIN_DOSSIER_TEXTURES = ".\\model\\textures\\"
