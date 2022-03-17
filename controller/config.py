@@ -28,7 +28,7 @@ def genererGrilleEtBombes(largeur: int, hauteur: int, nbBombes: int):
         ligne = randint(0, hauteur-1)
         colonne = randint(0, largeur-1)
 
-        # Si il n'y a pas déjà une bombe, placer une bombe et décrémenter le variant de boucle nbBombes qui repr�sente le nombre de bombes restantes à placer.
+        # Si il n'y a pas déjà une bombe, placer une bombe et décrémenter le variant de boucle nbBombes qui représente le nombre de bombes restantes à placer.
         if not bombes[colonne][ligne]:
             bombes[colonne][ligne] = True
             nbBombes -= 1
