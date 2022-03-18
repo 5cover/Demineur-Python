@@ -2,38 +2,91 @@ import tkinter as tk
 from tkinter import ttk # Widgets à thèmes
 import controller.config as config
 
-def creerFenetrePrincipale(grille, bombes):
+_grille = None
+_bombes = None
+_labels = []
+_fenetrePrincipale = tk.Tk()
+_imagesChargees = {}
 
-    fenetre = tk.Tk()
+def init(grille, bombes):
+    global _grille
+    global _bombes
+    _grille = grille
+    _bombes = bombes
 
-    fenetre.geometry("640x640") # taille
-    fenetre.resizable(False, False) # désactiver le redimensionnement
-    fenetre.title("Démineur 2020") # titre
-    fenetre.iconbitmap('.\\model\\icon.ico') # icône
+def creerFenetrePrincipale():
 
-    for iColonne in range(len(grille)-1):
-        fenetre.columnconfigure(iColonne)
-    for iLigne in range(len(grille[0])-1):
-        fenetre.rowconfigure(iLigne)
+    _fenetrePrincipale.geometry("640x640") # taille
+    _fenetrePrincipale.resizable(False, False) # désactiver le redimensionnement
+    _fenetrePrincipale.title("Démineur 2020") # titre
+    _fenetrePrincipale.iconbitmap('.\\model\\icon.ico') # icône
 
-    for i in range(len(grille)-1):
-        for j in range (len(grille[0])-1):
-            texte = ""
-            nbBombesVoisines = config.compterBombesVoisines(i, j, bombes)
+    for iColonne in range(len(_grille)-1):
+        _fenetrePrincipale.columnconfigure(iColonne)
+    for iLigne in range(len(_grille[0])-1):
+        _fenetrePrincipale.rowconfigure(iLigne)
 
-            if grille[i][j] == config.case.VIDE and nbBombesVoisines > 0:
-                texte = str(nbBombesVoisines)
-
-            creerLabelCase(fenetre, grille[i][j], texte, config.choisirCouleur(nbBombesVoisines)).grid(column = i, row = j)
-            
-    return fenetre
+    for ligne in range(len(_grille)-1):
+        for colonne in range (len(_grille[0])-1):
+            creerLabelCase().grid(column = colonne, row = ligne)
+    
+    actualiserLabels()
+    return _fenetrePrincipale
 
 
-def creerLabelCase(fenetre, case: config.case, texte, couleur: str):
-    img = tk.PhotoImage(file = config.CHEMIN_DOSSIER_TEXTURES + case.value, width=config.COTE_CASE, height=config.COTE_CASE)
-    imagesCharges.append(img)
-    return tk.Label(fenetre, text=texte, image=img, compound='center', width=config.COTE_CASE, height=config.COTE_CASE, bd=0, fg=couleur, font=("Fixedsys 16 bold"))
+def actualiserLabels():
+    for label in _labels:
+        ligne = label.grid_info()["row"]
+        colonne = label.grid_info()["column"]
 
-# Ce tableau sert à stocker les images produites par creerWidget, afin qu'elles ne soient pas "garbage-collected" (supprimées automatiqument par Python pour libérer de la mémoire)
-imagesCharges = []
+        case = _grille[ligne][colonne]
+        nbBombesVoisines = config.compterBombesVoisines(ligne, colonne, _bombes)
 
+        label["image"] = recupererImageCase(case, label)
+        label["text"] = obtenirTexteCase(nbBombesVoisines, case)
+        label["fg"] = config.choisirCouleur(nbBombesVoisines)
+
+def obtenirTexteCase(nbBombesVoisines, case: config.case):
+    texte = ""
+    if case == config.case.VIDE and nbBombesVoisines > 0:
+        texte = str(nbBombesVoisines)
+    return texte
+
+def creerLabelCase():
+    label = tk.Label(master=_fenetrePrincipale, compound='center', bd=0, font=("Segoe 10 bold"), width=config.COTE_CASE, height=config.COTE_CASE)
+    label.bind('<Button>', caseClic)
+    _labels.append(label)
+    return label
+
+def recupererImageCase(case: config.case, label):
+    img = tk.PhotoImage(master=_fenetrePrincipale, file=config.CHEMIN_DOSSIER_TEXTURES + case.value, width=config.COTE_CASE, height=config.COTE_CASE)
+    _imagesChargees[label] = img
+    return img
+
+
+def caseClic(event):
+    ligne = event.widget.grid_info()["row"]
+    colonne = event.widget.grid_info()["column"]
+    if event.num == 1:
+        caseClicGauche(ligne, colonne)
+    elif event.num == 3:
+        caseClicDroit(ligne, colonne)
+    actualiserLabels()
+
+def caseClicGauche(ligne, colonne):
+    if _bombes[ligne][colonne] and _grille[ligne][colonne] != config.case.DRAPEAU:
+        perdre()
+    elif _grille[ligne][colonne] == config.case.PLEINE:
+        _grille[ligne][colonne] = config.case.VIDE
+    
+def perdre():
+    for ligne in range(len(_grille)-1):
+        for colonne in range (len(_grille[0])-1):
+            if _bombes[ligne][colonne]:
+                _grille[ligne][colonne] = config.case.EXPLOSEE
+
+def caseClicDroit(ligne, colonne):
+    if _grille[ligne][colonne] == config.case.PLEINE:
+        _grille[ligne][colonne] = config.case.DRAPEAU
+    elif _grille[ligne][colonne] == config.case.DRAPEAU:
+        _grille[ligne][colonne] = config.case.PLEINE

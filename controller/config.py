@@ -1,6 +1,12 @@
 ﻿from enum import Enum
 from random import randint
 
+CHEMIN_DOSSIER_TEXTURES = ".\\model\\textures\\"
+""" Chemin du dossier des textures relatif au répertoire racine de l'application. """
+
+COTE_CASE = 32
+""" Côté en pixels des cases et de leur textures associées. """
+
 class case(Enum):
     """ Les différentes cases possibles et les noms de fichier de leur textures"""
     PLEINE = "pleine.gif"
@@ -12,8 +18,8 @@ class case(Enum):
     EXPLOSEE = "explosee.gif"
     """ Case contenant une bombe explosée """
 
-def genererGrilleEtBombes(largeur: int, hauteur: int, nbBombes: int):
-    # Génère la grille de jeu et place les bombes.
+def genererGrilleEtBombes(hauteur: int, largeur: int, nbBombes: int):
+    """ Génère la grille de jeu et place les bombes. """
 
     if hauteur < 1 or largeur < 1:
         raise ValueError("La hauteur et la largeur doivent être supérieures ou égales à 1.")
@@ -35,19 +41,10 @@ def genererGrilleEtBombes(largeur: int, hauteur: int, nbBombes: int):
 
     return grille, bombes
 
-def compterBombesVoisines(colonne: int, ligne: int, bombes):
-    largeur = len(bombes)-1
-    hauteur = len(bombes[0])-1
+def compterBombesVoisines(ligne: int, colonne: int, bombes):
+    """ Compte le nombre de bombes dans les 8 cases voisines d'une case. """
+    
     bombesVoisines = 0
-    for i in range(colonne - 1 if colonne > 0 else 0,
-                   colonne + 2 if colonne < largeur else largeur):
-        for j in range(ligne - 1 if ligne > 0 else 0,
-                       ligne + 2 if ligne < hauteur else hauteur):
-            if bombes[i][j]:
-                bombesVoisines += 1
-
-    if bombes[colonne][ligne]:
-        bombesVoisines -= 1
 
     return bombesVoisines
 
@@ -70,11 +67,3 @@ def choisirCouleur(n: int):
         return "gray50"
 
     return "black"
-
-
-# Chemin du dossier des textures relatif au répertoire racine de l'application.
-CHEMIN_DOSSIER_TEXTURES = ".\\model\\textures\\"
-
-# Côté en pixels des cases et de leur textures associées.
-COTE_CASE = 32
-

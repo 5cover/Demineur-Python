@@ -33,11 +33,14 @@
     <Folder Include="view\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dossier de validation de projet n2 NSI.odt" />
+    <Content Include="grille notation projet NSI n2 Eleve.odt" />
     <Content Include="model\icon.ico" />
     <Content Include="model\textures\drapeau.gif" />
     <Content Include="model\textures\explosee.gif" />
     <Content Include="model\textures\pleine.gif" />
     <Content Include="model\textures\vide.gif" />
+    <Content Include="Presentation objectifs PARTICULIERS  Projet NSI n2 2019-2020 VERSION 28_05_20.odp" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
