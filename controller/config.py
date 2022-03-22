@@ -7,6 +7,9 @@ CHEMIN_DOSSIER_TEXTURES = ".\\model\\textures\\"
 COTE_CASE = 32
 """ Côté en pixels des cases et de leur textures associées. """
 
+RAYON_BOMBE = 1
+""" Rayon de recherche de bombes voisines. """
+
 class case(Enum):
     """ Les différentes cases possibles et les noms de fichier de leur textures"""
     PLEINE = "pleine.gif"
@@ -38,14 +41,25 @@ def genererGrilleEtBombes(hauteur: int, largeur: int, nbBombes: int):
         if not bombes[colonne][ligne]:
             bombes[colonne][ligne] = True
             nbBombes -= 1
+    bombes[9][2] = True
 
     return grille, bombes
 
-def compterBombesVoisines(ligne: int, colonne: int, bombes):
-    """ Compte le nombre de bombes dans les 8 cases voisines d'une case. """
-    
+def compterBombesVoisines(l: int, c: int, bombes):
+    """ Compte le nombre de bombes dans les cases voisines d'une case. """
+    hauteur = len(bombes)
+    largeur = len(bombes[0])
     bombesVoisines = 0
+    for i in range(l-RAYON_BOMBE if l>RAYON_BOMBE else 0,
+                   l+RAYON_BOMBE+1 if l+RAYON_BOMBE<hauteur else hauteur):
+        for j in range(c-RAYON_BOMBE if c>RAYON_BOMBE else 0,
+                       c+RAYON_BOMBE+1 if c+RAYON_BOMBE<largeur else largeur):
+                if bombes[i][j]:
+                    bombesVoisines += 1
 
+    if bombes[l][c]:
+        bombesVoisines -= 1
+        
     return bombesVoisines
 
 def choisirCouleur(n: int):

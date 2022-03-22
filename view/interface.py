@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk # Widgets à thèmes
 import controller.config as config
 
 _grille = None
@@ -20,14 +19,14 @@ def creerFenetrePrincipale():
     _fenetrePrincipale.resizable(False, False) # désactiver le redimensionnement
     _fenetrePrincipale.title("Démineur 2020") # titre
     _fenetrePrincipale.iconbitmap('.\\model\\icon.ico') # icône
-
-    for iColonne in range(len(_grille)-1):
+    
+    for iColonne in range(len(_grille)):
         _fenetrePrincipale.columnconfigure(iColonne)
-    for iLigne in range(len(_grille[0])-1):
+    for iLigne in range(len(_grille[0])):
         _fenetrePrincipale.rowconfigure(iLigne)
 
-    for ligne in range(len(_grille)-1):
-        for colonne in range (len(_grille[0])-1):
+    for ligne in range(len(_grille)):
+        for colonne in range (len(_grille[0])):
             creerLabelCase().grid(column = colonne, row = ligne)
     
     actualiserLabels()
@@ -53,13 +52,13 @@ def obtenirTexteCase(nbBombesVoisines, case: config.case):
     return texte
 
 def creerLabelCase():
-    label = tk.Label(master=_fenetrePrincipale, compound='center', bd=0, font=("Segoe 10 bold"), width=config.COTE_CASE, height=config.COTE_CASE)
+    label = tk.Label(master=_fenetrePrincipale, compound='center', bd=0, font=("Segoe 10 bold"), padx=0, pady=0)
     label.bind('<Button>', caseClic)
     _labels.append(label)
     return label
 
 def recupererImageCase(case: config.case, label):
-    img = tk.PhotoImage(master=_fenetrePrincipale, file=config.CHEMIN_DOSSIER_TEXTURES + case.value, width=config.COTE_CASE, height=config.COTE_CASE)
+    img = tk.PhotoImage(master=_fenetrePrincipale, file=config.CHEMIN_DOSSIER_TEXTURES + case.value)
     _imagesChargees[label] = img
     return img
 
@@ -80,8 +79,8 @@ def caseClicGauche(ligne, colonne):
         _grille[ligne][colonne] = config.case.VIDE
     
 def perdre():
-    for ligne in range(len(_grille)-1):
-        for colonne in range (len(_grille[0])-1):
+    for ligne in range(len(_grille)):
+        for colonne in range (len(_grille[0])):
             if _bombes[ligne][colonne]:
                 _grille[ligne][colonne] = config.case.EXPLOSEE
 
