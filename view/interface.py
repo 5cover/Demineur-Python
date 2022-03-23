@@ -1,45 +1,41 @@
 import tkinter as tk
 import controller.config as config
+from controller.config import largeurGrille, hauteurGrille
+from controller.clics import caseClicGauche, caseClicDroit
+from itertools import chain
 
-_grille = None
-_bombes = None
 _labels = []
 _fenetrePrincipale = tk.Tk()
 _imagesChargees = {}
 
-def init(grille, bombes):
-    global _grille
-    global _bombes
-    _grille = grille
-    _bombes = bombes
-
 def creerFenetrePrincipale():
-
-    _fenetrePrincipale.geometry("640x640") # taille
+    _fenetrePrincipale.geometry("640x480") # taille
     _fenetrePrincipale.resizable(False, False) # désactiver le redimensionnement
     _fenetrePrincipale.title("Démineur 2020") # titre
     _fenetrePrincipale.iconbitmap('.\\model\\icon.ico') # icône
     
-    for iColonne in range(len(_grille)):
+    for iColonne in range(largeurGrille()):
         _fenetrePrincipale.columnconfigure(iColonne)
-    for iLigne in range(len(_grille[0])):
+    for iLigne in range(hauteurGrille()):
         _fenetrePrincipale.rowconfigure(iLigne)
 
-    for ligne in range(len(_grille)):
-        for colonne in range (len(_grille[0])):
+    for colonne in range(largeurGrille()):
+        for ligne in range (hauteurGrille()):
             creerLabelCase().grid(column = colonne, row = ligne)
-    
+
     actualiserLabels()
+
+    _fenetrePrincipale.mainloop()
+
     return _fenetrePrincipale
 
 
 def actualiserLabels():
     for label in _labels:
-        ligne = label.grid_info()["row"]
         colonne = label.grid_info()["column"]
-
-        case = _grille[ligne][colonne]
-        nbBombesVoisines = config.compterBombesVoisines(ligne, colonne, _bombes)
+        ligne = label.grid_info()["row"]
+        case = config.grille[colonne][ligne]
+        nbBombesVoisines = config.compterBombesVoisines(colonne, ligne)
 
         label["image"] = recupererImageCase(case, label)
         label["text"] = obtenirTexteCase(nbBombesVoisines, case)
@@ -62,30 +58,36 @@ def recupererImageCase(case: config.case, label):
     _imagesChargees[label] = img
     return img
 
-
 def caseClic(event):
-    ligne = event.widget.grid_info()["row"]
+
     colonne = event.widget.grid_info()["column"]
+    ligne = event.widget.grid_info()["row"]
+
+    case = config.grille[colonne][ligne]
+    bombe = config.bombes[colonne][ligne]
+
     if event.num == 1:
-        caseClicGauche(ligne, colonne)
+        caseClicGauche(case, bombe)
     elif event.num == 3:
-        caseClicDroit(ligne, colonne)
+        caseClicDroit(case)
+
     actualiserLabels()
 
-def caseClicGauche(ligne, colonne):
-    if _bombes[ligne][colonne] and _grille[ligne][colonne] != config.case.DRAPEAU:
-        perdre()
-    elif _grille[ligne][colonne] == config.case.PLEINE:
-        _grille[ligne][colonne] = config.case.VIDE
+def creuserPourLaPremiereFois(l, c):
+    creuser(l, c)
     
-def perdre():
-    for ligne in range(len(_grille)):
-        for colonne in range (len(_grille[0])):
-            if _bombes[ligne][colonne]:
-                _grille[ligne][colonne] = config.case.EXPLOSEE
+    for i in range(0, largeurGrille()):
+        for j in chain(reversed(range(0, c)), range(c, hauteurGrille())):
+            if config.compterBombesVoisines(i, j) > 0:
+                break
+            creuser(i, j)
 
-def caseClicDroit(ligne, colonne):
-    if _grille[ligne][colonne] == config.case.PLEINE:
-        _grille[ligne][colonne] = config.case.DRAPEAU
-    elif _grille[ligne][colonne] == config.case.DRAPEAU:
-        _grille[ligne][colonne] = config.case.PLEINE
+def creuser(c, l):
+    config.grille[c][l] = config.case.VIDE
+
+def perdre():
+    """ Perdre la partie et révéler toutes les bombes. """
+    for ligne in range(largeurGrille()):
+        for colonne in range (hauteurGrille()):
+            if config.bombes[ligne][colonne]:
+                config.grille[ligne][colonne] = config.case.EXPLOSEE

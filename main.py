@@ -1,8 +1,8 @@
 import view.interface as interface
 import controller.config as config
+def main():
+    config.genererGrilleEtBombes(10, 6, 10)
+    interface.creerFenetrePrincipale()
 
-grilleEtBombes = config.genererGrilleEtBombes(10, 10, 10)
-
-interface.init(grilleEtBombes[0], grilleEtBombes[1])
-
-interface.creerFenetrePrincipale().mainloop()
+if __name__ == "__main__":
+    main()

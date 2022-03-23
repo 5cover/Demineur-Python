@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="controller\config.py" />
+    <Compile Include="controller\clics.py" />
     <Compile Include="main.py" />
     <Compile Include="view\interface.py" />
   </ItemGroup>
