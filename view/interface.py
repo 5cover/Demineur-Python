@@ -1,15 +1,15 @@
 import tkinter as tk
 import controller.config as config
 from controller.config import largeurGrille, hauteurGrille
-from controller.clics import caseClicGauche, caseClicDroit
-from itertools import chain
+import controller.clics as clics
 
 _labels = []
 _fenetrePrincipale = tk.Tk()
 _imagesChargees = {}
 
 def creerFenetrePrincipale():
-    _fenetrePrincipale.geometry("640x480") # taille
+    # la taille de la fenêtre est adaptéee à la taille de la grille de jeu
+    _fenetrePrincipale.geometry(f"{largeurGrille()*config.COTE_CASE}x{hauteurGrille()*config.COTE_CASE}")
     _fenetrePrincipale.resizable(False, False) # désactiver le redimensionnement
     _fenetrePrincipale.title("Démineur 2020") # titre
     _fenetrePrincipale.iconbitmap('.\\model\\icon.ico') # icône
@@ -25,10 +25,7 @@ def creerFenetrePrincipale():
 
     actualiserLabels()
 
-    _fenetrePrincipale.mainloop()
-
     return _fenetrePrincipale
-
 
 def actualiserLabels():
     for label in _labels:
@@ -39,7 +36,8 @@ def actualiserLabels():
 
         label["image"] = recupererImageCase(case, label)
         label["text"] = obtenirTexteCase(nbBombesVoisines, case)
-        label["fg"] = config.choisirCouleur(nbBombesVoisines)
+        if nbBombesVoisines > 0:
+            label["fg"] = config.choisirCouleur(nbBombesVoisines)
 
 def obtenirTexteCase(nbBombesVoisines, case: config.case):
     texte = ""
@@ -59,35 +57,17 @@ def recupererImageCase(case: config.case, label):
     return img
 
 def caseClic(event):
-
-    colonne = event.widget.grid_info()["column"]
-    ligne = event.widget.grid_info()["row"]
-
-    case = config.grille[colonne][ligne]
-    bombe = config.bombes[colonne][ligne]
-
-    if event.num == 1:
-        caseClicGauche(case, bombe)
-    elif event.num == 3:
-        caseClicDroit(case)
-
+    clics.caseClic(event.widget.grid_info()["column"], event.widget.grid_info()["row"], event.num)
     actualiserLabels()
 
-def creuserPourLaPremiereFois(l, c):
-    creuser(l, c)
-    
-    for i in range(0, largeurGrille()):
-        for j in chain(reversed(range(0, c)), range(c, hauteurGrille())):
-            if config.compterBombesVoisines(i, j) > 0:
-                break
-            creuser(i, j)
+def partiePerdue():
+    _fenetrePrincipale.title("Partie perdue !")
+    _fenetrePrincipale.bell()
 
-def creuser(c, l):
-    config.grille[c][l] = config.case.VIDE
+def partieGagnee():
+    _fenetrePrincipale.title("Partie gagnée !")
+    _fenetrePrincipale.bell()
 
-def perdre():
-    """ Perdre la partie et révéler toutes les bombes. """
-    for ligne in range(largeurGrille()):
-        for colonne in range (hauteurGrille()):
-            if config.bombes[ligne][colonne]:
-                config.grille[ligne][colonne] = config.case.EXPLOSEE
+def nouvellePartie():
+    _fenetrePrincipale.title("Démineur 2020")
+    config.genererGrille(largeurGrille(), hauteurGrille(), config.nbBombes)

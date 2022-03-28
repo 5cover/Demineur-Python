@@ -1,5 +1,5 @@
 from enum import Enum
-from random import randint
+from random import randrange, choice
 
 CHEMIN_DOSSIER_TEXTURES = ".\\model\\textures\\"
 """ Chemin du dossier des textures relatif au répertoire racine de l'application. """
@@ -9,6 +9,13 @@ COTE_CASE = 32
 
 RAYON_BOMBE = 1
 """ Rayon de recherche de bombes voisines. """
+
+MULTIPLICATEUR_ZONE_EXCLUSION = 1/3
+""" Ratio entre les dimensions de la grille et celles de la zone d'exclusion sans bombe autour de la première case creusée. """
+
+grille = None
+bombes = None
+nbBombes = 0
 
 class case(Enum):
     """ Les différentes cases possibles et les noms de fichier de leur textures"""
@@ -21,10 +28,12 @@ class case(Enum):
     EXPLOSEE = "explosee.gif"
     """ Case contenant une bombe explosée """
 
-def genererGrilleEtBombes(largeur: int, hauteur: int, nbBombes: int):
+def genererGrille(largeur: int, hauteur: int, nombreBombes: int):
     """ Génère la grille de jeu et dissémine les bombes. """
 
-    global grille, bombes
+    global grille, bombes, nbBombes
+
+    nbBombes = nombreBombes
 
     if hauteur < 1 or largeur < 1:
         raise ValueError("La hauteur et la largeur doivent être supérieures ou égales à 1.")
@@ -34,19 +43,59 @@ def genererGrilleEtBombes(largeur: int, hauteur: int, nbBombes: int):
     grille = [[case.PLEINE] * hauteur for _ in range(largeur)]
     bombes = [[False] * hauteur for _ in range(largeur)]
 
-    while nbBombes > 0:
+def placerBombes(c, l):
+    """ Place les bombes. Les bombes ne sont placées que sur les cases pleines."""
+    bombesRestantes = nbBombes
+    # colonne ∈ [ 0 ; c-rayonLarge [ ∪ ] c+rayonLarge ; largeurGrille() [
+
+    # ligne   ∈ [ 0 ; l-rayonHaut  [ ∪ ] l+rayonHaut  ; hauteurGrille() [
+
+    while bombesRestantes > 0:
         # Choix d'un emplacement aléatoire sur la grille
-        colonne = randint(0, largeur-1)
-        ligne = randint(0, hauteur-1)
+        ligne = randrange(0, largeurGrille())
+        colonne = randrange(0, hauteurGrille())
 
-        # Si il n'y a pas déjà une bombe, placer une bombe et décrémenter le variant de boucle nbBombes qui représente le nombre de bombes restantes à placer.
-        if not bombes[colonne][ligne]:
+        # Si il n'y a pas déjà une bombe et que l'empalcememt choisi est en dehors de la zone d'exclusion,
+        # placer une bombe et décrémenter le variant de boucle nbBombes qui représente le nombre de bombes restantes à placer.
+        if not pointAppartientAZoneExlusion(colonne, ligne, c, l) and not bombes[colonne][ligne]:
             bombes[colonne][ligne] = True
-            nbBombes -= 1
+            bombesRestantes -= 1
+
+def pointAppartientAZoneExlusion(c, l, ccze, lcze):
+        rayonLarge = int(largeurGrille() * MULTIPLICATEUR_ZONE_EXCLUSION / 2)
+        rayonHaut = int(hauteurGrille() * MULTIPLICATEUR_ZONE_EXCLUSION / 2)
+
+        return c >= ccze-rayonLarge and c <= ccze+rayonLarge and l >= lcze-rayonHaut and l <= lcze+rayonHaut
+
+def additionIndexSure(i, x, maxi):
+    if i + x >= maxi:
+        return maxi-1
+    return i + x
+
+def soustractionIndexSure(i, x):
+    if i - x < 0:
+        return 0
+    return i - x
+
+def verifierSiPartieGagnee():
+    """ Vérifie si tous les drapeaux se trouvent sous toutes les bombes"""
+    for c in range(largeurGrille()):
+        for l in range(hauteurGrille()):
+            # Si on trouve un drapeau sans bombe ou une bombe sans drapeau
+            if (grille[c][l]==case.DRAPEAU) ^ bombes[c][l]: # ^ correspond à un OU Exclusif (XOR)
+                return False
+    return True
+def choisirCoordonneeAleatoire(coordonneeCentrale, rayon, maxi):
+    choix = []
+
+    if coordonneeCentrale - rayon > 0:
+        choix.append(randrange(0, coordonneeCentrale - rayon))
+    if coordonneeCentrale + rayon < maxi:
+        choix.append(randrange(coordonneeCentrale + rayon, maxi))
 
 
-grille = None
-bombes = None
+    return choice(choix)
+
 
 def largeurGrille():
     return len(grille)
