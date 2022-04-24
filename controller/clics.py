@@ -6,6 +6,7 @@ _premierClicGauche = True
 _partiePerdue = False
 
 def caseClic(c: int, l: int, buttonNumber: int):
+    """ Traite de l'évènement de clic sur une case. """
     global _premierClicGauche, _partiePerdue
 
     if buttonNumber == 1 and not _partiePerdue:
@@ -46,12 +47,13 @@ def caseClicDroit(c: int, l: int):
     elif config.grille[c][l] == config.case.DRAPEAU:
         enleverDrapeau(c, l)
 
-def creuserZoneExclusion(ccze, lcze):
+def creuserZoneExclusion(colonneCentrale, ligneCentrale):
+    """ Creusage de la zone d'exclusion autour d'un emplacement sur la grille donné. """
     rayonLarge = int(largeurGrille() * config.MULTIPLICATEUR_ZONE_EXCLUSION / 2)
     rayonHaut = int(hauteurGrille() * config.MULTIPLICATEUR_ZONE_EXCLUSION / 2)
 
-    for c in range(soustractionIndexSure(ccze, rayonLarge), additionIndexSure(ccze, rayonLarge+1, largeurGrille())):
-        for l in range(soustractionIndexSure(lcze, rayonHaut), additionIndexSure(lcze, rayonHaut+1, hauteurGrille())):
+    for c in range(soustractionIndexSure(colonneCentrale, rayonLarge), additionIndexSure(colonneCentrale, rayonLarge+1, largeurGrille())):
+        for l in range(soustractionIndexSure(ligneCentrale, rayonHaut), additionIndexSure(ligneCentrale, rayonHaut+1, hauteurGrille())):
             creuser(c, l)
 
 def creuser(c, l):
@@ -64,10 +66,10 @@ def enleverDrapeau(c, l):
     config.grille[c][l] = config.case.PLEINE
 
 def perdre():
+    """ Perdte la partie et révélation toutes les bombes. """
     global _partiePerdue
     _partiePerdue = True
     interface.partiePerdue()
-    """ Perdre la partie et révéler toutes les bombes. """
     for ligne in range(largeurGrille()):
         for colonne in range (hauteurGrille()):
             if config.bombes[ligne][colonne]:

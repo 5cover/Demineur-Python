@@ -61,18 +61,20 @@ def placerBombes(c, l):
             bombes[colonne][ligne] = True
             bombesRestantes -= 1
 
-def pointAppartientAZoneExlusion(c, l, ccze, lcze):
+def pointAppartientAZoneExlusion(c, l, colonneCentraleZoneExclusion, ligneCentraleZoneExclusion):
         rayonLarge = int(largeurGrille() * MULTIPLICATEUR_ZONE_EXCLUSION / 2)
         rayonHaut = int(hauteurGrille() * MULTIPLICATEUR_ZONE_EXCLUSION / 2)
 
-        return c >= ccze-rayonLarge and c <= ccze+rayonLarge and l >= lcze-rayonHaut and l <= lcze+rayonHaut
+        return c >= colonneCentraleZoneExclusion-rayonLarge and c <= colonneCentraleZoneExclusion+rayonLarge and l >= ligneCentraleZoneExclusion-rayonHaut and l <= ligneCentraleZoneExclusion+rayonHaut
 
 def additionIndexSure(i, x, maxi):
+    """ Addition d'un index à un nombre sans dépasser un maximum donné. """
     if i + x >= maxi:
         return maxi-1
     return i + x
 
 def soustractionIndexSure(i, x):
+    """ Soustraction d'un nombre à un index sans dépassser 0. """
     if i - x < 0:
         return 0
     return i - x
@@ -85,17 +87,6 @@ def verifierSiPartieGagnee():
             if (grille[c][l]==case.DRAPEAU) ^ bombes[c][l]: # ^ correspond à un OU Exclusif (XOR)
                 return False
     return True
-def choisirCoordonneeAleatoire(coordonneeCentrale, rayon, maxi):
-    choix = []
-
-    if coordonneeCentrale - rayon > 0:
-        choix.append(randrange(0, coordonneeCentrale - rayon))
-    if coordonneeCentrale + rayon < maxi:
-        choix.append(randrange(coordonneeCentrale + rayon, maxi))
-
-
-    return choice(choix)
-
 
 def largeurGrille():
     return len(grille)
