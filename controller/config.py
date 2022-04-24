@@ -24,7 +24,7 @@ class case(Enum):
     VIDE = "vide.gif"
     """ Case creusée par le joueur """
     DRAPEAU = "drapeau.gif"
-    """ Case contenant un drapeau placé par le joueur, marquant ou non l'emplacememnt d'une bombe. Un chiffre de 0 à 8 s'affiche dessus selon le nombre de cases voisines contenant une bombe. """
+    """ Case contenant un drapeau placé par le joueur, marquant ou non l'emplacement d'une bombe. Un chiffre de 0 à 8 s'affiche dessus selon le nombre de cases voisines contenant une bombe. """
     EXPLOSEE = "explosee.gif"
     """ Case contenant une bombe explosée """
 
