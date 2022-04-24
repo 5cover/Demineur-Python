@@ -1,14 +1,11 @@
 from enum import Enum
-from random import randrange, choice
+from random import randrange
 
 CHEMIN_DOSSIER_TEXTURES = ".\\model\\textures\\"
 """ Chemin du dossier des textures relatif au répertoire racine de l'application. """
 
 COTE_CASE = 32
 """ Côté en pixels des cases et de leur textures associées. """
-
-RAYON_BOMBE = 1
-""" Rayon de recherche de bombes voisines. """
 
 MULTIPLICATEUR_ZONE_EXCLUSION = 1/3
 """ Ratio entre les dimensions de la grille et celles de la zone d'exclusion sans bombe autour de la première case creusée. """
@@ -43,7 +40,7 @@ def genererGrille(largeur: int, hauteur: int, nombreBombes: int):
     grille = [[case.PLEINE] * hauteur for _ in range(largeur)]
     bombes = [[False] * hauteur for _ in range(largeur)]
 
-def placerBombes(c, l):
+def placerBombes(colonneCentraleZoneExclusion, ligneCentraleZoneExclusion):
     """ Place les bombes. Les bombes ne sont placées que sur les cases pleines."""
     bombesRestantes = nbBombes
     # colonne ∈ [ 0 ; c-rayonLarge [ ∪ ] c+rayonLarge ; largeurGrille() [
@@ -57,7 +54,7 @@ def placerBombes(c, l):
 
         # Si il n'y a pas déjà une bombe et que l'empalcememt choisi est en dehors de la zone d'exclusion,
         # placer une bombe et décrémenter le variant de boucle nbBombes qui représente le nombre de bombes restantes à placer.
-        if not pointAppartientAZoneExlusion(colonne, ligne, c, l) and not bombes[colonne][ligne]:
+        if not pointAppartientAZoneExlusion(colonne, ligne, colonneCentraleZoneExclusion, ligneCentraleZoneExclusion) and not bombes[colonne][ligne]:
             bombes[colonne][ligne] = True
             bombesRestantes -= 1
 
@@ -93,19 +90,20 @@ def largeurGrille():
 def hauteurGrille():
     return len(grille[0])
 
-def compterBombesVoisines(c: int, l: int,):
+def compterBombesVoisines(c: int, l: int):
     """ Compte le nombre de bombes dans les cases voisines d'une case. """
 
     bombesVoisines = 0
 
-    for i in range(c-RAYON_BOMBE if c>RAYON_BOMBE else 0,
-                   c+RAYON_BOMBE+1 if c+RAYON_BOMBE<largeurGrille() else largeurGrille()):
-        for j in range(l-RAYON_BOMBE if l>RAYON_BOMBE else 0,
-                       l+RAYON_BOMBE+1 if l+RAYON_BOMBE<hauteurGrille() else hauteurGrille()):
+    for i in range(c-1 if c>1 else 0,
+                   c+2 if c+1<largeurGrille() else largeurGrille()):
+        for j in range(l-1 if l>1 else 0,
+                       l+2 if l+1<hauteurGrille() else hauteurGrille()):
                 if bombes[i][j]:
                     bombesVoisines += 1
 
-    # Dans le cas où il y a une bombe à l'emplacement passé à la fonction, on diminue de 1, car ne souhaite pas compter les bombes sur la case.
+    # Dans le cas où il y a une bombe à l'emplacement passé à la fonction,
+    # on diminue de 1, car ne souhaite pas compter les bombes sur la case.
     if bombes[c][l]:
         bombesVoisines -= 1
         
