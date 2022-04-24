@@ -66,7 +66,7 @@ def enleverDrapeau(c, l):
     config.grille[c][l] = config.case.PLEINE
 
 def perdre():
-    """ Perdte la partie et révélation toutes les bombes. """
+    """ Perte de la partie et révélation de toutes les bombes. """
     global _partiePerdue
     _partiePerdue = True
     interface.partiePerdue()

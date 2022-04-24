@@ -111,8 +111,10 @@ def compterBombesVoisines(c: int, l: int):
 
 def choisirCouleur(n: int):
     """ Choisit la couleur à utiliser selon le nombre de bombes voisines.
-    Si la valeur passée ne correspond à aucune couleur, retourne noir ("black").
     Les couleurs sont basées sur le jeu de Démineur original. """
+
+    assert n > 0 and n < 9, "n doit se trouver entre 1 et 8"
+
     if n == 1:
         return "blue"
     if n == 2:
@@ -129,5 +131,3 @@ def choisirCouleur(n: int):
         return "black"
     if n == 8:
         return "gray50"
-
-    return "black"

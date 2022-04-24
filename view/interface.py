@@ -69,7 +69,7 @@ def caseClic(event):
     - L'emplacement de la case cliquée (avec la fonction event.widget.grid_info()) ;
     - Le numéro du bouton de la souris cliquée (avec event.num). 3 valeurs sont prises en charge :
         - 1 pour le bouton gauche ;
-        - 2 pout le bouton de la molette ;
+        - 2 pour le bouton de la molette ;
         - 3 pour le bouton droit. """
     clics.caseClic(event.widget.grid_info()["column"], event.widget.grid_info()["row"], event.num)
     actualiserLabels()
